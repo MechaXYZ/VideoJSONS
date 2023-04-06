@@ -1,0 +1,19 @@
+{
+  "name": "vid-to-ascii",
+  "version": "1.0.0",
+  "description": "converts stuff",
+  "main": "converter.js",
+  "keywords": [],
+  "author": "MechaXYZ#8172",
+  "license": "ISC",
+  "dependencies": {
+    "@types/node": "^18.0.6",
+    "ascii-data-image": "^1.0.7852",
+    "express": "^4.18.2",
+    "ffmpeg": "^0.0.4",
+    "ffprobe": "^1.1.2",
+    "node-fetch": "^3.2.6",
+    "nodejs-file-downloader": "^4.11.0",
+    "video-to-pixels": "^0.0.1"
+  }
+}
