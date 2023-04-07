@@ -4,7 +4,7 @@ const v2p = require('video-to-pixels');
 
 var fri = 0;
 var div = 16;
-const file = 'vids/badapple.mp4'
+const file = 'vids/diofight/diofight000.mp4'
 
 var frames = {
 	"width": 0,
@@ -12,18 +12,27 @@ var frames = {
 	"frames": []
 }
 
-const pixels = [
-	['⬛', 43],
-	['⚫', 44],
-	['🖤', 46],
-	['🔳', 110],
-	['🔲', 113],
-	['🤍', 119],
-	['⚪', 152],
-	['⬜', 180]
+const asciis = [
+	[' ', '░', '▒', '▓', '█'],
+	[`"`, ` `, `.`, `:`, `-`, `=`, `+`, `*`, `#`, `%`, `@`, `"`],
+	[' ', '.', ':', '-', 'i', '|', '=', '+', '%', 'O', '#', '@'],
+	['⠀','⠄','⠆','⠖','⠶','⡶','⣩','⣪','⣫','⣾','⣿'],
+	[
+		['⬛', 43],
+		['⚫', 44],
+		['🖤', 46],
+		['🔳', 110],
+		['🔲', 113],
+		['🤍', 119],
+		['⚪', 152],
+		['⬜', 180]
+	]
 ];
+  
+const pixels = asciis[2]; // the 3rd one is the best
 
-const getpx = lum => pixels.reduce((prev, curr) => Math.abs(curr[1] - lum) < Math.abs(prev[1] - lum) ? curr : prev)[0];
+const map = (value, x1, y1, x2, y2) => (value - x1) * (y2 - x2) / (y1 - x1) + x2;
+const getpx = lum => pixels.reduce((prev,curr) => Math.abs(curr[1] - lum) < Math.abs(prev[1] - lum) ? curr : prev)[0];
 
 console.log('converting');
 
@@ -33,9 +42,16 @@ v2p.videoToPixels(file, function (data, w, h) {
 	var str = ""
 	var sdata = v2p.scaleDownByN(div, data, w, h);
 
-	frames.width = w
-	frames.height = h
+	if (frames.width == 0) {
+		frames.width = w
+		console.log('width: ' + w.toString())
+	}
 
+	if (frames.height == 0) {
+		frames.height = h
+		console.log('height: ' + h.toString())
+	}
+	
 	console.log('frame: ' + fri.toString())
 	
 	for (let j = 0; j < (h / div); j++) {
@@ -47,8 +63,9 @@ v2p.videoToPixels(file, function (data, w, h) {
 			const b = sdata[idx + 2];
 
 			const mean = (r + g + b) / 3;
+			const ci = Math.floor(map(mean, 0, 255, 0, pixels.length));
 
-			str += getpx(mean);
+			str += pixels[ci];
 		}
 
 		str += "\n"
@@ -58,7 +75,7 @@ v2p.videoToPixels(file, function (data, w, h) {
 }, function(){
     console.log('converted');
 
-	var stream = fs.createWriteStream('json/' + path.parse(path.basename(file)).name + '.json');
+	var stream = fs.createWriteStream('json/diofight/' + path.parse(path.basename(file)).name + '.json');
 	
 	stream.write(JSON.stringify(frames));
 	stream.end();
